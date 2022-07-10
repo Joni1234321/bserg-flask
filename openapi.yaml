@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: bserg API
+  description: bserg API documentation
+servers:
+  - url: http://localhost:5000/api/v1
+    description: local api
+tags:
+  - name: projects
+  - name: fields
+paths:
+  /project:
+    get:
+      tags:
+        - projects
+      summary: get all projects
+      responses:
+        200:
+          description: success
+    post:
+      tags:
+        - projects
+      summary: add a project
+      responses:
+        200:
+          description: success
+  /project/{id}:
+    get:
+      tags:
+        - projects
+      summary: get a project with given id
+      parameters:
+        - name: id
+          in: path
+          description: project id
+          required: true
+          schema:
+            type: string
+            default: 62bdab54a80869d50fbb014c
+      responses:
+        200:
+          description: success
+    delete:
+      tags:
+        - projects
+      summary: delete a project with given id
+      parameters:
+        - name: id
+          in: path
+          description: project id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+
+    put:
+      tags:
+        - projects
+      summary: update a projects fields with a given id
+      parameters:
+        - name: id
+          in: path
+          description: project id
+          required: true
+          schema:
+            type: string
+            default: 62bdab54a80869d50fbb014c
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/project'
+      responses:
+        200:
+          description: success
+  /project/{id}/section/{index}/field:
+    post:
+      tags:
+        - fields
+      summary: update a projects fields with a given id
+      parameters:
+        - name: id
+          in: path
+          description: project id
+          required: true
+          schema:
+            type: string
+            default: 62bdab54a80869d50fbb014c
+        - name: index
+          in: path
+          description: section index
+          required: true
+          schema:
+            type: integer
+            default: 0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/field'
+      responses:
+        200:
+          description: success
+
+
+components:
+  schemas:
+    field:
+      properties:
+        type:
+          type: string
+          default: "Text"
+        value:
+          type: string
+          default: "This is the fields values"
+
+    section:
+      properties:
+        title:
+          type: string
+          default: "Section Title"
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/field'
+
+    project:
+      required: false
+      properties:
+        title:
+          type: string
+          default: BSERG (Vue)
+        description:
+          type: string
+          default: My own personal website, now created in VueJS
+        url:
+          type: string
+          default: bserg
+        date:
+          type: string
+          default: ""
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/section'
+
+
+
+
+
