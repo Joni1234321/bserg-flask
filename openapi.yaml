@@ -8,28 +8,46 @@ servers:
     description: local api
 tags:
   - name: projects
-  - name: fields
+  - name: sections
 paths:
   /project:
     get:
       tags:
         - projects
-      summary: get all projects
+      summary: get overview of all projects
       responses:
         200:
           description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/project'
     post:
       tags:
         - projects
-      summary: add a project
+      summary: add a project and its details
+      requestBody:
+        required: true
+        content:
+            application/json:
+            schema:
+              $ref: '#/components/schemas/project'
       responses:
-        200:
-          description: success
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/objectId'
+        400:
+          description: can't create
   /project/{id}:
     get:
       tags:
         - projects
-      summary: get a project with given id
+      summary: get a project and its details with given id
       parameters:
         - name: id
           in: path
@@ -41,10 +59,16 @@ paths:
       responses:
         200:
           description: success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/project'
+                  - $ref: '#/components/schemas/project_details'
     delete:
       tags:
         - projects
-      summary: delete a project with given id
+      summary: delete a project and its details with a given id
       parameters:
         - name: id
           in: path
@@ -59,7 +83,7 @@ paths:
     put:
       tags:
         - projects
-      summary: update a projects fields with a given id
+      summary: update a project fields with a given id
       parameters:
         - name: id
           in: path
@@ -76,11 +100,11 @@ paths:
       responses:
         200:
           description: success
-  /project/{id}/section/{index}/field:
+  /project/{id}/section/{index}:
     post:
       tags:
-        - fields
-      summary: update a projects fields with a given id
+        - sections
+      summary: update a project_details section with given index
       parameters:
         - name: id
           in: path
@@ -97,10 +121,11 @@ paths:
             type: integer
             default: 0
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/field'
+              $ref: '#/components/schemas/section'
       responses:
         200:
           description: success
@@ -108,6 +133,21 @@ paths:
 
 components:
   schemas:
+    objectId:
+      type: object
+      properties:
+        $oid:
+          type: string
+          default: 62bdab54a80869d50fbb014c
+    document:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/objectId'
+        schema_version:
+          type: integer
+          default: 1
+
     field:
       properties:
         type:
@@ -128,26 +168,35 @@ components:
             $ref: '#/components/schemas/field'
 
     project:
-      required: false
-      properties:
-        title:
-          type: string
-          default: BSERG (Vue)
-        description:
-          type: string
-          default: My own personal website, now created in VueJS
-        url:
-          type: string
-          default: bserg
-        date:
-          type: string
-          default: ""
-        sections:
-          type: array
-          items:
-            $ref: '#/components/schemas/section'
+      allOf:
+        - $ref: '#/components/schemas/document'
+        - type: object
+          properties:
+            schema_version:
+              type: integer
+            project_details_id:
+              type: integer
+              default: 62cbdf72397a5e43dda8f44c
+            title:
+              type: string
+              default: BSERG (Vue)
+            description:
+              type: string
+              default: My own personal website, now created in VueJS
+            url:
+              type: string
+              default: bserg
+            date:
+              type: string
+              default: ""
 
 
-
-
-
+    project_details:
+      allOf:
+        - $ref: '#/components/schemas/document'
+        - type: object
+          properties:
+            sections:
+              type: array
+              items:
+                $ref: '#/components/schemas/section'
