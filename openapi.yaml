@@ -9,6 +9,7 @@ servers:
 tags:
   - name: projects
   - name: sections
+  - name: org
 paths:
   /project:
     get:
@@ -129,6 +130,23 @@ paths:
       responses:
         200:
           description: success
+  /mil/refactor:
+    get:
+      tags:
+        - org
+      summary: refactor elements
+  /mil:
+    get:
+      tags:
+        - org
+      summary: get overview of all projects
+      responses:
+        200:
+          description: success
+
+
+
+
 
 
 components:
