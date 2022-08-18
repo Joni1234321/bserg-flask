@@ -10,16 +10,13 @@ mil = Blueprint("mil", __name__)
 
 @mil.route("/", methods=["GET"])
 def get_orgs():
-    print("FISK")
     data = mil_db["org"].find()
     return make_response(dumps(list(data)), 200)
 
 
 @mil.route("/<string:object_id>", methods=["GET"])
 def get_org(object_id):
-    print("HEJ")
     org = mil_db["org"].find_one(id_query(object_id))
-    print(org)
     if org is None:
         return make_response(dumps(object_id), 404)
 
